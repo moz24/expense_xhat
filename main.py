@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
+import os
+import sys
 import logging
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters
 from bot.config import BOT_TOKEN
 from bot.database.db import init_db
@@ -10,17 +14,40 @@ from bot.handlers.voice_handler import handle_voice
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
+    stream=sys.stdout,
 )
 logger = logging.getLogger(__name__)
+
+PORT = int(os.getenv("PORT", "8080"))
+
+
+class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"ok")
+
+    def log_message(self, format, *args):
+        pass
+
+
+def run_health_server():
+    server = HTTPServer(("0.0.0.0", PORT), HealthHandler)
+    logger.info("Health check server listening on port %d", PORT)
+    server.serve_forever()
 
 
 def main():
     if not BOT_TOKEN:
-        logger.error("TELEGRAM_BOT_TOKEN not set! Copy .env.example to .env and add your token.")
-        return
+        logger.error("TELEGRAM_BOT_TOKEN not set!")
+        sys.exit(1)
 
-    init_db()
-    logger.info("Database initialized.")
+    try:
+        init_db()
+        logger.info("Database initialized.")
+    except Exception as e:
+        logger.error("Database init failed: %s", e)
+        raise
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
@@ -38,4 +65,6 @@ def main():
 
 
 if __name__ == "__main__":
+    t = threading.Thread(target=run_health_server, daemon=True)
+    t.start()
     main()
