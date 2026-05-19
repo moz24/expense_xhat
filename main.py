@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+import asyncio
 import logging
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
@@ -38,6 +39,9 @@ def run_health_server():
 
 
 def main():
+    bin_dir = os.path.join(os.path.dirname(__file__))
+    os.environ["PATH"] = bin_dir + os.pathsep + os.environ.get("PATH", "")
+
     print(f"DEBUG: BOT_TOKEN length={len(BOT_TOKEN)}, starts={BOT_TOKEN[:10] if BOT_TOKEN else 'EMPTY'}", flush=True)
     if not BOT_TOKEN:
         logger.error("TELEGRAM_BOT_TOKEN not set in Railway Variables!")
@@ -69,6 +73,11 @@ def main():
 
 
 if __name__ == "__main__":
+    try:
+        asyncio.get_event_loop()
+    except RuntimeError:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+
     t = threading.Thread(target=run_health_server, daemon=True)
     t.start()
     main()
