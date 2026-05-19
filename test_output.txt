@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "<string>", line 30, in <module>
+    print(f"{status}: amount={r['amount']}, cat={r['category']}, text={repr(r['text'])}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 40-42: character maps to <undefined>
+PASS: amount=500, cat=Food, text='lunch 500'
+PASS: amount=1500, cat=Transport, text='spent 1500 on petrol'
+FAIL: amount=200, cat=Other, text='200 ka nashta'

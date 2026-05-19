@@ -1,0 +1,5 @@
+PASS: amt=300 cat=Healthcare lang=ur
+PASS: amt=200 cat=Food lang=ur
+PASS: amt=1500 cat=Transport lang=ur
+PASS: amt=200 cat=Groceries lang=ur
+4/4 Urdu tests passed
