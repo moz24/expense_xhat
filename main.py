@@ -38,9 +38,13 @@ def run_health_server():
 
 
 def main():
+    print(f"DEBUG: BOT_TOKEN length={len(BOT_TOKEN)}, starts={BOT_TOKEN[:10] if BOT_TOKEN else 'EMPTY'}", flush=True)
     if not BOT_TOKEN:
-        logger.error("TELEGRAM_BOT_TOKEN not set!")
-        sys.exit(1)
+        logger.error("TELEGRAM_BOT_TOKEN not set in Railway Variables!")
+        logger.error("Go to Variables tab and add: TELEGRAM_BOT_TOKEN = your_token")
+        while True:
+            import time
+            time.sleep(60)
 
     try:
         init_db()

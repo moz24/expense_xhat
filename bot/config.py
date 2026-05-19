@@ -1,10 +1,15 @@
 import os
 import sys
 
+# Debug: print all env vars starting with TELEGRAM
+for k, v in sorted(os.environ.items()):
+    if "TELEGRAM" in k.upper() or "BOT" in k.upper():
+        print(f"DEBUG_ENV: {k}={v[:20] if v else '(empty)'}", flush=True)
+
 try:
     from dotenv import load_dotenv
-    load_dotenv(override=False)
-except ImportError:
+    load_dotenv()
+except Exception:
     pass
 
 BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
