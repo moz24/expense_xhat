@@ -126,12 +126,10 @@ def _init_sqlite():
 
 def add_expense(user_id, amount, category, description, currency="PKR", lang="en"):
     conn = get_connection()
-    expense_id = _insert_and_get_id(
-        conn,
-        """INSERT INTO expenses (user_id, amount, category, description, currency, language)
-           VALUES (%s, %s, %s, %s, %s, %s)""",
-        (user_id, amount, category, description, currency, lang),
-    )
+    p = "%s" if _is_postgres(conn) else "?"
+    sql = f"""INSERT INTO expenses (user_id, amount, category, description, currency, language)
+              VALUES ({p}, {p}, {p}, {p}, {p}, {p})"""
+    expense_id = _insert_and_get_id(conn, sql, (user_id, amount, category, description, currency, lang))
     conn.close()
     return expense_id
 
